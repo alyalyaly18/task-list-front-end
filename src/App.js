@@ -34,13 +34,18 @@ const App = () => {
     setTasksList(updatedTasksList);
     console.log(updatedTasksList);
   };
-  // const deleteTask =(taskToUpdate)=>{
-  //   const updatedTasksList = tasksList.map((task) => {
-  //     if (task.id !== taskToUpdate.id) {
-  //       return task;
-  //   }});
-  //   setTasksList(updatedTasksList);
-  // };
+
+  const deleteTask = (taskId) => {
+   
+    const newTasksList = [];
+    for (const task of tasksList) {
+      if (task.id !== taskId) {
+        newTasksList.push(task);
+      }
+    }
+    setTasksList(newTasksList);
+  };
+  
 
   return (
     <div className="App">
@@ -49,8 +54,7 @@ const App = () => {
       </header>
       <main>
         <div>
-          <TaskList tasks={tasksList} updateTask={updateTask} />
-          {/* deleteTask={deleteTask} */}
+          <TaskList tasks={tasksList} updateTask={updateTask} deleteTask={deleteTask} />
         </div>
       </main>
     </div>

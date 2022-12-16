@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Task.css';
 
-const Task = ({ id, title, isComplete, updateTask }) => {
+const Task = ({ id, title, isComplete, updateTask, deleteTask }) => {
   // const [complete, setComplete] = useState(isComplete);
   const buttonClass = isComplete ? 'tasks__item__toggle--completed' : '';
   const toggleTask = ()=>{
@@ -13,6 +13,10 @@ const Task = ({ id, title, isComplete, updateTask }) => {
     });
   };
 
+  // const deleteTaskButton = ()=>{
+  //   deleteTask({id, title, isComplete});
+  // }
+
   return (
     <li className="tasks__item">
       <button
@@ -22,8 +26,7 @@ const Task = ({ id, title, isComplete, updateTask }) => {
       >
         {title}
       </button>
-      <button className="tasks__item__remove button">x</button>
-      {/* onClick={deleteTask}  */}
+      <button className="tasks__item__remove button" onClick={()=>deleteTask(id)}>x</button>
     </li>
   );
 };
@@ -32,7 +35,8 @@ Task.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
   isComplete: PropTypes.bool.isRequired,
-  updateTask:PropTypes.func.isRequired
+  updateTask:PropTypes.func.isRequired,
+  deleteTask:PropTypes.func.isRequired
 };
 
 export default Task;
