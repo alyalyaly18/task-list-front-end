@@ -41,7 +41,6 @@ const App = () => {
   //   }});
   //   setTasksList(updatedTasksList);
   // };
-  
 
   return (
     <div className="App">
@@ -50,7 +49,7 @@ const App = () => {
       </header>
       <main>
         <div>
-          <TaskList tasks={TASKS} updateTask={updateTask}  />
+          <TaskList tasks={tasksList} updateTask={updateTask} />
           {/* deleteTask={deleteTask} */}
         </div>
       </main>
