@@ -1,39 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TaskList from './components/TaskList.js';
 import './App.css';
+import axios from 'axios';
 
-const TASKS = [
-  {
-    id: 1,
-    title: 'Mow the lawn',
-    isComplete: false,
-  },
-  {
-    id: 2,
-    title: 'Cook Pasta',
-    isComplete: true,
-  },
-];
+
 
 const App = () => {
-  const initialCopy = TASKS.map((task) => {
-    return { ...task };
-  });
+  // const initialCopy = TASKS.map((task) => {
+  //   return { ...task };
+  // });
 
-  const [tasksList, setTasksList] = useState(initialCopy);
+  const [tasksList, setTasksList] = useState([]);
+
+  const URL = 'http://localhost:5000/tasks';
+  useEffect(()=>{
+    axios.get(URL)
+    .then((res) => {
+      //console.log(res);
+      const tasksAPIResCopy = res.data.map((task) => {
+        return {
+          ...task
+      }})
+      setTasksList(tasksAPIResCopy);
+        
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }, []);
 
   const updateTask = (taskToUpdate) => {
-    console.log('Hi');
-    console.log(taskToUpdate);
-    const updatedTasksList = tasksList.map((task) => {
-      if (task.id === taskToUpdate.id) {
-        return taskToUpdate;
-      }
-      return task;
+    // console.log("updateTask called");
+    axios.patch(`${URL}/${taskToUpdate.id}/mark_complete`)
+    .then((res)=>{
+      const updatedTasksList = tasksList.map((task) => {
+         if (task.id === taskToUpdate.id) {
+            return taskToUpdate;
+          }
+          return task;
+         });
+         setTasksList(updatedTasksList);
+    })
+    .catch((err)=>{
+      console.log(err);
     });
-    setTasksList(updatedTasksList);
-    console.log(updatedTasksList);
   };
+  // const updateTask = (taskToUpdate) => {
+  //   console.log(taskToUpdate);
+  //   const updatedTasksList = tasksList.map((task) => {
+  //     if (task.id === taskToUpdate.id) {
+  //       return taskToUpdate;
+  //     }
+  //     return task;
+  //   });
+  //   setTasksList(updatedTasksList);
+  //   console.log(updatedTasksList);
+  // };
 
   const deleteTask = (taskId) => {
    
