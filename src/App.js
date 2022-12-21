@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TaskList from './components/TaskList.js';
 import './App.css';
 import axios from 'axios';
-
-
+import NewTaskForm from './components/NewTaskForm.js';
 
 const App = () => {
   // const initialCopy = TASKS.map((task) => {
@@ -13,61 +12,76 @@ const App = () => {
   const [tasksList, setTasksList] = useState([]);
 
   const URL = 'http://localhost:5000/tasks';
-  useEffect(()=>{
-    axios.get(URL)
-    .then((res) => {
-      //console.log(res);
-      const tasksAPIResCopy = res.data.map((task) => {
-        return {
-          ...task
-      }})
-      setTasksList(tasksAPIResCopy);
-        
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  useEffect(() => {
+    axios
+      .get(URL)
+      .then((res) => {
+        //console.log(res);
+        const tasksAPIResCopy = res.data.map((task) => {
+          return {
+            ...task,
+            isComplete: task.is_complete,
+          };
+        });
+        setTasksList(tasksAPIResCopy);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const updateTask = (taskToUpdate) => {
     // console.log("updateTask called");
-    axios.patch(`${URL}/${taskToUpdate.id}/mark_complete`)
-    .then((res)=>{
-      const updatedTasksList = tasksList.map((task) => {
-         if (task.id === taskToUpdate.id) {
+    axios
+      .patch(`${URL}/${taskToUpdate.id}/mark_complete`)
+      .then((res) => {
+        const updatedTasksList = tasksList.map((task) => {
+          if (task.id === taskToUpdate.id) {
             return taskToUpdate;
           }
           return task;
-         });
-         setTasksList(updatedTasksList);
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
+        });
+        setTasksList(updatedTasksList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-  // const updateTask = (taskToUpdate) => {
-  //   console.log(taskToUpdate);
-  //   const updatedTasksList = tasksList.map((task) => {
-  //     if (task.id === taskToUpdate.id) {
-  //       return taskToUpdate;
-  //     }
-  //     return task;
-  //   });
-  //   setTasksList(updatedTasksList);
-  //   console.log(updatedTasksList);
-  // };
 
   const deleteTask = (taskId) => {
-   
-    const newTasksList = [];
-    for (const task of tasksList) {
-      if (task.id !== taskId) {
-        newTasksList.push(task);
-      }
-    }
-    setTasksList(newTasksList);
+    console.log("deleteTask Called");
+    axios
+      .delete(`${URL}/${taskId}`)
+      .then(() => {
+        const newTasksList = [];
+        for (const task of tasksList) {
+          if (task.id !== taskId) {
+            newTasksList.push(task);
+          }
+        }
+        setTasksList(newTasksList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   
+  const addTask = (newTaskInfo) => {
+    axios.post(URL, newTaskInfo)
+    .then((response)=>{
+      //fetchAllBikes();  //<- This helper function will make a .get() call to fetch all bikes and update the state variable to display them
+      const newTasks = [...tasksList];
+      const newTaskJSON={
+        ...newTaskInfo,
+        "id": response.data.id
+      }
+      newTasks.push(newTaskJSON);
+      setTasksList(newTasks); //this method does not require a .get request; we are pushing the bike data to the bikes list and using the setter to trigger a rerender.
+    })
+    .catch((error)=>{
+      console.log(error);
+    });
+  }
 
   return (
     <div className="App">
@@ -76,8 +90,14 @@ const App = () => {
       </header>
       <main>
         <div>
-          <TaskList tasks={tasksList} updateTask={updateTask} deleteTask={deleteTask} />
+          <TaskList
+            tasks={tasksList}
+            updateTask={updateTask}
+            deleteTask={deleteTask}
+          />
+          <NewTaskForm addTask={addTask}/>
         </div>
+        
       </main>
     </div>
   );
