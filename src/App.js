@@ -49,7 +49,7 @@ const App = () => {
   };
 
   const deleteTask = (taskId) => {
-    console.log("deleteTask Called");
+    // console.log("deleteTask Called");
     axios
       .delete(`${URL}/${taskId}`)
       .then(() => {
@@ -73,8 +73,8 @@ const App = () => {
       const newTasks = [...tasksList];
       const newTaskJSON={
         ...newTaskInfo,
-        "id": response.data.id
-      }
+        'id': response.data.id // Why id in quotation
+      };
       newTasks.push(newTaskJSON);
       setTasksList(newTasks); //this method does not require a .get request; we are pushing the bike data to the bikes list and using the setter to trigger a rerender.
     })
