@@ -3,8 +3,6 @@ import TaskList from './components/TaskList.js';
 import './App.css';
 import axios from 'axios';
 
-
-
 const App = () => {
   // const initialCopy = TASKS.map((task) => {
   //   return { ...task };
@@ -12,38 +10,40 @@ const App = () => {
 
   const [tasksList, setTasksList] = useState([]);
 
-  const URL = 'http://localhost:5000/tasks';
-  useEffect(()=>{
-    axios.get(URL)
-    .then((res) => {
-      //console.log(res);
-      const tasksAPIResCopy = res.data.map((task) => {
-        return {
-          ...task
-      }})
-      setTasksList(tasksAPIResCopy);
-        
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  const URL = 'http://127.0.0.1:5000/tasks';
+  useEffect(() => {
+    axios
+      .get(URL)
+      .then((res) => {
+        //console.log(res);
+        const tasksAPIResCopy = res.data.map((task) => {
+          return {
+            ...task,
+          };
+        });
+        setTasksList(tasksAPIResCopy);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const updateTask = (taskToUpdate) => {
     // console.log("updateTask called");
-    axios.patch(`${URL}/${taskToUpdate.id}/mark_complete`)
-    .then((res)=>{
-      const updatedTasksList = tasksList.map((task) => {
-         if (task.id === taskToUpdate.id) {
+    axios
+      .patch(`${URL}/${taskToUpdate.id}/mark_complete`)
+      .then((res) => {
+        const updatedTasksList = tasksList.map((task) => {
+          if (task.id === taskToUpdate.id) {
             return taskToUpdate;
           }
           return task;
-         });
-         setTasksList(updatedTasksList);
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
+        });
+        setTasksList(updatedTasksList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   // const updateTask = (taskToUpdate) => {
   //   console.log(taskToUpdate);
@@ -58,7 +58,6 @@ const App = () => {
   // };
 
   const deleteTask = (taskId) => {
-   
     const newTasksList = [];
     for (const task of tasksList) {
       if (task.id !== taskId) {
@@ -67,7 +66,6 @@ const App = () => {
     }
     setTasksList(newTasksList);
   };
-  
 
   return (
     <div className="App">
@@ -76,7 +74,11 @@ const App = () => {
       </header>
       <main>
         <div>
-          <TaskList tasks={tasksList} updateTask={updateTask} deleteTask={deleteTask} />
+          <TaskList
+            tasks={tasksList}
+            updateTask={updateTask}
+            deleteTask={deleteTask}
+          />
         </div>
       </main>
     </div>
