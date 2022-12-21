@@ -11,7 +11,7 @@ const App = () => {
 
   const [tasksList, setTasksList] = useState([]);
 
-  const URL = 'http://localhost:5000/tasks';
+  const URL = 'http://127.0.0.1:5000/tasks';
   useEffect(() => {
     axios
       .get(URL)
