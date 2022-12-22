@@ -65,23 +65,26 @@ const App = () => {
         console.log(err);
       });
   };
-  
+
   const addTask = (newTaskInfo) => {
-    axios.post(URL, newTaskInfo)
-    .then((response)=>{
-      //fetchAllBikes();  //<- This helper function will make a .get() call to fetch all bikes and update the state variable to display them
-      const newTasks = [...tasksList];
-      const newTaskJSON={
-        ...newTaskInfo,
-        'id': response.data.id // Why id in quotation
-      };
-      newTasks.push(newTaskJSON);
-      setTasksList(newTasks); //this method does not require a .get request; we are pushing the bike data to the bikes list and using the setter to trigger a rerender.
-    })
-    .catch((error)=>{
-      console.log(error);
-    });
-  }
+    axios
+      .post(URL, newTaskInfo)
+      .then((response) => {
+        //fetchAllBikes();  //<- This helper function will make a .get() call to fetch all bikes and update the state variable to display them
+        const newTasks = [...tasksList];
+        const newTaskJSON = {
+          ...newTaskInfo,
+          id: response.data.task.id,
+          isComplete: false, // Why id in quotation
+        };
+        newTasks.push(newTaskJSON);
+        setTasksList(newTasks); //this method does not require a .get request; we are pushing the bike data to the bikes list and using the setter to trigger a rerender.
+        // console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div className="App">
@@ -95,9 +98,8 @@ const App = () => {
             updateTask={updateTask}
             deleteTask={deleteTask}
           />
-          <NewTaskForm addTask={addTask}/>
+          <NewTaskForm addTask={addTask} />
         </div>
-        
       </main>
     </div>
   );
